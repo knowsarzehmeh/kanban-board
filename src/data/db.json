@@ -1,0 +1,135 @@
+{
+  "boards": [
+    {
+      "id": 1,
+      "title": "Storefront Checkout Revamp"
+    },
+    {
+      "id": 2,
+      "title": "Design Mockup"
+    },
+    {
+      "id": 3,
+      "title": "Product Marketing"
+    },
+    {
+      "title": "Site Revamp",
+      "id": 4
+    },
+    {
+      "title": "Delyork IT",
+      "id": 5
+    },
+    {
+      "title": "I 🧡 You too",
+      "id": 6
+    },
+    {
+      "title": "Made With L❤️ve",
+      "id": 7
+    },
+    {
+      "title": "Machala",
+      "id": 8
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "title": "Backlog",
+      "boardId": 1
+    },
+    {
+      "id": 2,
+      "title": "Todo",
+      "boardId": 1
+    },
+    {
+      "id": 3,
+      "title": "In progress",
+      "boardId": 1
+    },
+    {
+      "id": 4,
+      "title": "Done",
+      "boardId": 1
+    },
+    {
+      "id": 5,
+      "title": "Backlog",
+      "boardId": 2
+    },
+    {
+      "id": 6,
+      "title": "Todo",
+      "boardId": 2
+    },
+    {
+      "title": "Backlog",
+      "boardId": 8,
+      "id": 7
+    },
+    {
+      "title": "Todo",
+      "boardId": 8,
+      "id": 8
+    },
+    {
+      "title": "In-progress",
+      "boardId": 8,
+      "id": 9
+    },
+    {
+      "title": "Done",
+      "boardId": 8,
+      "id": 10
+    }
+  ],
+  "tickets": [
+    {
+      "id": 1,
+      "title": "Auditing information architecture",
+      "desc": "Listing out all of the findings from the current to the existing IA",
+      "label": "Research",
+      "listId": 7,
+      "boardId": 8
+    },
+    {
+      "id": 2,
+      "title": "Add Sidbar",
+      "desc": "Lorem ipsum dolor sit amet",
+      "label": "Planning",
+      "listId": 7,
+      "boardId": 8
+    },
+    {
+      "id": 3,
+      "title": "Make Responsive",
+      "desc": "Lorem ipsum dolor sit amet",
+      "label": "Dev",
+      "listId": 9,
+      "boardId": 8
+    },
+    {
+      "id": 4,
+      "title": "Low Fidelity Wireframe",
+      "desc": "Lorem ipsum dolor sit amet",
+      "label": "Design",
+      "listId": 2
+    },
+    {
+      "id": 5,
+      "title": "Quality research planning",
+      "desc": "Ideating the foundation look",
+      "label": "Content",
+      "listId": 3
+    },
+    {
+      "id": 6,
+      "title": "Copy cross check on mobile",
+      "desc": "Ideating the foundation look",
+      "label": "Content",
+      "listId": 4
+    }
+  ]
+}
