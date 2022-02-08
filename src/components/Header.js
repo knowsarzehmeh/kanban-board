@@ -14,7 +14,7 @@ function Header() {
     const [boardTitle, setBoardTitle] = useState('')
     const [isCreating, setIsCreating] = useState(false)
 
-    const {dispatch} = useBoardContext()
+    const {state, dispatch} = useBoardContext()
 
 
 function renderForm() {  
@@ -112,9 +112,9 @@ return (
           </div>
           
           <div className='mt-6'>
-              <p className='text-sm text-gray-600'>Checkout Experience Team</p>
+              <p className='text-sm text-gray-600'>{state.board && state.board.title ? 'Checkout Experience Team' : ''}</p>
               <div className='flex justify-between'>
-                  <p className='text-2xl'>Storefront Checkout Revamp</p>
+                  <p className='text-2xl'>{state.board ? state.board.title : ''}</p>
                   <div className='flex items-center'>
                   
                       <Avatar src='https://randomuser.me/api/portraits/men/65.jpg' containerClass='-mr-2'/>
