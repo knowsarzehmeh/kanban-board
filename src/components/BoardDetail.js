@@ -31,6 +31,15 @@ function BoardDetail() {
   useEffect(() => {
         fetchBoardFromServer(params.id)
   }, []);
+
+
+  const renderCount = (list) => {
+      let filteredTicket;
+      if(state.board && state.board.tickets){
+        filteredTicket = state.board.tickets.filter((ticket) => ticket.listId === list.id)
+      }
+      return filteredTicket.length
+  }
   
 
   return (
@@ -44,7 +53,7 @@ function BoardDetail() {
                 <div className='flex justify-between items-center mb-3'>
                         <div className='flex items-center space-x-3'>
                         <h4 className=' text-gray-600 text-sm  font-bold'>{list.title}</h4>
-                        <span className='text-gray-400 text-sm'> 5</span>
+                        <span className='text-gray-400 text-sm'>{renderCount(list)}</span>
                         </div>
     
                         <button className='border rounded-full flex bg-gray-200  p-1 items-center justify-center'>
