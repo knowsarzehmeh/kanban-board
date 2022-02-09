@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import BoardCard from '../components/BoardCard';
 import Layout from '../components/Layout';
-import { FETCH_BOARD } from '../constants';
+import { BASE_URL, FETCH_BOARD } from '../constants';
 import { useBoardContext } from '../context/boardContext';
 
 function BoardListPage() {
@@ -10,7 +10,7 @@ function BoardListPage() {
 
 
     const fetchBoardsFromServer = async () => {
-        let res = await fetch('http://localhost:8000/boards', {
+        let res = await fetch(`${BASE_URL}/boards`, {
             method: 'GET',
             headers: {"Content-Type": "application/json"},
         })
