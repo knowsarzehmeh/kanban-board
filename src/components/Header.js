@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CREATE_BOARD } from '../constants';
+import { BASE_URL, CREATE_BOARD } from '../constants';
 import { useBoardContext } from '../context/boardContext';
 import { CogIcon, InformationCircleIcon, MenuIcon, PlusSmIcon, UserAddIcon } from './assets';
 import Avatar from './Avatar';
@@ -38,7 +38,7 @@ function renderForm() {
      e.preventDefault();
      if(boardTitle.length > 0) {
          setIsCreating(true)
-     const res = await fetch('http://localhost:8000/boards', {
+     const res = await fetch(`${BASE_URL}/boards`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body:JSON.stringify({ title: boardTitle})
@@ -55,7 +55,7 @@ function renderForm() {
         //   create on the server
         mapBoardToCard.forEach( async (card) => {
             // console.log('before assign', card)
-            const res = await fetch('http://localhost:8000/lists', {
+            const res = await fetch(`${BASE_URL}/lists`, {
                 method: 'POST',
                 headers: {"Content-Type": "application/json"},
                 body:JSON.stringify(card)

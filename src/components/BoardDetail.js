@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
+import { Droppable } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { GET_SINGLE_BOARD } from '../constants';
+import { BASE_URL, GET_SINGLE_BOARD } from '../constants';
 import { useBoardContext } from '../context/boardContext';
 import { PlusSmIcon } from './assets';
 import Layout from './Layout';
@@ -11,7 +13,9 @@ function BoardDetail() {
   const navigate =  useNavigate()
   const {state, dispatch}  =   useBoardContext()
   const [loadForm, setLoadForm] = useState(false)
-  const [boardTitle, setBoardTitle] = useState('')
+  const [ticketTitle, setTicketTitle] = useState('')
+  const [ticketDescription, setTicketDescription] = useState('')
+  const [ticketLabel, setTicketLabel] = useState('Content')
   const [selectedList, setSelectedList] = useState({})
   const [isCreating, setIsCreating] = useState(false)
 
@@ -19,7 +23,7 @@ function BoardDetail() {
     if(isNaN(id)) navigate('/')
 
     try {
-     let res = await fetch(`http://localhost:8000/boards/${id}?_embed=lists&_embed=tickets`,{
+     let res = await fetch(`${BASE_URL}/boards/${id}?_embed=lists&_embed=tickets`,{
             method: 'GET',
         })
         res = await res.json()
@@ -46,6 +50,82 @@ function BoardDetail() {
   }
 
 
+  const onSubmitTicket = async (e) => {
+      e.preventDefault()
+      setIsCreating(true)
+
+      const data = {
+          title: ticketTitle,
+          desc: ticketDescription,
+          label: ticketLabel,
+          boardId: +params.id,
+          listId: selectedList.id
+      }
+
+
+      try {
+   let res = await fetch(`${BASE_URL}/tickets`, {
+        method: 'POST',
+        headers: {"Content-Type": "application/json"},
+        body:JSON.stringify(data)
+    })
+   res = await res.json()
+   
+   console.log(res)
+   let board = state.board
+   board.tickets = [...board.tickets, res]
+
+   dispatch({ type: GET_SINGLE_BOARD, board })
+
+        setTimeout(() => {
+            setIsCreating(false)
+        }, 500); 
+
+      } catch(e) {
+        console.error(e)
+        setIsCreating(false)
+      }
+     
+  }
+
+
+  const onDragEnd = async (item) => {
+      let tickets = state.board && state.board.tickets
+   
+    //   remove the source from the source filtered by list id
+      let source = tickets.filter(ticket => ticket.listId === +item.source.droppableId )
+      let draggableTicket = source.find(ticket =>  ticket.id === +item.draggableId)
+      let draggableTicketIdx = tickets.findIndex(ticket =>  ticket.id === +item.draggableId)
+      let destination = tickets.filter(ticket => ticket.listId === +item.destination.droppableId )
+
+    //   update the list id of the draggableTicket
+     draggableTicket = {...draggableTicket, listId: +item.destination.droppableId}
+ 
+    //   remove from source
+    tickets.splice(draggableTicketIdx, 1)
+
+    // update postion
+    console.log('my destination location', item)
+    tickets.splice(+item.destination.index,0, draggableTicket)
+
+
+    console.log( 'After drag',tickets)
+    // update on the backend
+    let response = await fetch(`${BASE_URL}/tickets/${draggableTicket.id}`,{
+        method: 'PATCH',
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(draggableTicket)
+    })
+    response = await response.json()
+
+    const updatedBoard = {...state.board, tickets }
+
+    dispatch({type: GET_SINGLE_BOARD, board: updatedBoard })
+    
+
+  }
+
+
   const renderTicketForm = () => {
     return (
         <div id="authentication-modal"   className={`flex  bg-black bg-opacity-75 h-screen overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0  ${!loadForm ? 'hidden' : ''}` } >
@@ -56,12 +136,25 @@ function BoardDetail() {
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>  
                         </button>
                     </div>
-                    <form onSubmit={(e) => (e)} className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8" action="#">
+                    <form onSubmit={(e) => onSubmitTicket(e)} className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8" action="#">
                         <h3 className="text-xl font-medium text-gray-900 dark:text-white">Add Ticket </h3>
                         <div>
                             <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Title</label>
-                            <input onChange={(e) => setBoardTitle(e.target.value) } value={boardTitle} type="text" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a title for this board" required />
+                            <input onChange={(e) => setTicketTitle(e.target.value) } value={ticketTitle} type="text" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a title for this board" required />
                         </div>
+
+                        <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                        <textarea onChange={(e) => setTicketDescription(e.target.value)} id="message" style={{marginTop: '.7rem'}} rows="4" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"  placeholder="Leave a comment..." required></textarea>
+
+
+                        <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select label</label>
+                        <select id="countries" onChange={(e) => setTicketLabel(e.target.value)} style={{marginTop: '.7rem'}} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" >
+                            <option value='Content' >Content</option>
+                            <option value='Design'>Design</option>
+                            <option value='Dev'>Dev</option>
+                            <option value='Planning'>Planning</option>
+                            <option value='Research' >Research</option>
+                        </select>
                       
                         <button type="submit" className="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">{!isCreating ? 'Create board' : 'Loading...'}</button>
                     </form>
@@ -70,11 +163,11 @@ function BoardDetail() {
         </div> 
                 );
   }
-  
-console.log(selectedList)
   return (
     <Layout>
         {renderTicketForm()}
+
+    <DragDropContext onDragEnd={onDragEnd}>
       <section className='flex gap-5 px-4 p-8 md:px-8 overflow-x-auto'>
           {
               state.board && 
@@ -94,22 +187,28 @@ console.log(selectedList)
                                 <PlusSmIcon  className='w-4 h-4' />
                         </button>
                     </div>
-                <section className='max-h-128 w-64 overflow-y-auto flex-column'>
-                    {
-                        state.board.tickets &&
-                        state.board.tickets.map(ticket => {
-                            if(ticket.listId === list.id){
-                                return <Ticket key={ticket.id} title={ticket.title} description={ticket.description}  />
-                            }
-                            return '';
-                        })
-                    }
-                   {/* <Ticket />
-                   <Ticket />
-                   <Ticket />
-                   <Ticket />
-                   <Ticket /> */}
-               </section>
+                 
+                 <Droppable droppableId={list.id.toString()}>
+                        {
+                            (provider) => (
+                                <section ref={provider.innerRef} style={{minHeight: '20rem'}} {...provider.droppableProps} className='max-h-128 w-64 overflow-y-auto flex-column'>
+                                {
+                                    state.board.tickets &&
+                                    state.board.tickets.filter((ticket) => ticket.listId === list.id).map((ticket,index) => {
+                                
+                                            return <Ticket index={index} id={ticket.id} label={ticket.label} key={ticket.id} title={ticket.title} description={ticket.desc}  />
+                                  
+                                    })
+                                    }
+                                {/* <Ticket />
+                                <Ticket />
+                                <Ticket />
+                                <Ticket />
+                                <Ticket /> */}
+                                </section>
+                            )
+                        }
+                 </Droppable>
                </div>
               ))
 
@@ -184,6 +283,7 @@ console.log(selectedList)
             </section>
           </div> */}
       </section>
+      </DragDropContext>
       </Layout>
   )
 }
