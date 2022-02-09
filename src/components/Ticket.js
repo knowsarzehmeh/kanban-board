@@ -1,11 +1,13 @@
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import { Link } from 'react-router-dom';
 import { ChatAltIcon, DotsHorizontalIcon } from './assets';
 import Avatar from './Avatar';
 
 function Ticket({
     index,
     id,
+    boardId,
     label = 'Research',
     title = 'Auditing information architecture',
     description = 'Listing out all of the findings from the current to the existing IA'
@@ -25,6 +27,7 @@ function Ticket({
     <Draggable index={index} draggableId={id.toString()}>
         {
             (provider) => (
+        <Link to={`/board/${boardId}/ticket/${id}`}>
          <article ref={provider.innerRef} {...provider.draggableProps} {...provider.dragHandleProps} className='shadow bg-white rounded-md border p-3 mb-3'>
             <div className='flex justify-between items-center'>
                 <span className={'text-xs py-1 px-3 text-white rounded-xl ' + labelColor[label]} >
@@ -52,6 +55,7 @@ function Ticket({
                 </div>
             </div>
         </article>
+        </Link>
             )
         }
     </Draggable>

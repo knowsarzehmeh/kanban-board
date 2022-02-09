@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
-import BoardDetail from '../components/BoardDetail';
+import BoardDetail from '../pages/BoardDetail';
 import BoardListPage from '../pages/BoardListPage';
+import TicketDetail from '../pages/TicketDetail';
 
 function AppRouter() {
   return (
@@ -9,6 +10,7 @@ function AppRouter() {
          <Routes>
              <Route path='/' element={ <BoardListPage />} />
              <Route path='/board/:id' element={<BoardDetail />} />
+             <Route path='/board/:id/ticket/:ticketId' element={<TicketDetail/>} />
          </Routes>
       </BrowserRouter>
   )

@@ -12,6 +12,7 @@ import {
     MenuIcon,
     PlusSmIcon,
     SearchIcon,
+    ShareIcon,
     UserAddIcon,
 } from '@heroicons/react/outline'
 
@@ -29,6 +30,7 @@ export {
     MenuIcon,
     PlusSmIcon,
     TicketIcon,
+    ShareIcon,
     SearchIcon,
     UserAddIcon
 }

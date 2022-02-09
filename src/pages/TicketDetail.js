@@ -4,11 +4,11 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BASE_URL, GET_SINGLE_BOARD } from '../constants';
 import { useBoardContext } from '../context/boardContext';
-import { PlusSmIcon } from './assets';
-import Layout from './Layout';
-import Ticket from './Ticket';
+import { PlusSmIcon, ShareIcon } from '../components/assets';
+import Layout from '../components/Layout';
+import Ticket from '../components/Ticket';
 
-function BoardDetail() {
+function TicketDetail() {
   const params = useParams()
   const navigate =  useNavigate()
   const {state, dispatch}  =   useBoardContext()
@@ -29,6 +29,15 @@ function BoardDetail() {
         res = await res.json()
         
         console.log(res)
+        let ticketDetail;
+        if(res){
+          ticketDetail  = res.tickets.find((ticket) => ticket.id === +params.ticketId)
+            
+          setTicketTitle(ticketDetail.title)
+          setTicketDescription(ticketDetail.desc)
+          setTicketLabel(ticketDetail.label)
+        }
+      
         dispatch({ type: GET_SINGLE_BOARD, board: res })
         
     } catch (error) {
@@ -37,6 +46,7 @@ function BoardDetail() {
   }
 
   useEffect(() => {
+      console.log(params);
         fetchBoardFromServer(params.id)
   }, []);
 
@@ -105,18 +115,17 @@ function BoardDetail() {
     tickets.splice(draggableTicketIdx, 1)
 
     // update postion
-    console.log('my destination location', item)
+
     tickets.splice(+item.destination.index,0, draggableTicket)
 
 
-    console.log( 'After drag',tickets)
     // update on the backend
     let response = await fetch(`${BASE_URL}/tickets/${draggableTicket.id}`,{
         method: 'PATCH',
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(draggableTicket)
     })
-    response = await response.json()
+    await response.json()
 
     const updatedBoard = {...state.board, tickets }
 
@@ -128,35 +137,35 @@ function BoardDetail() {
 
   const renderTicketForm = () => {
     return (
-        <div id="authentication-modal"   className={`flex  bg-black bg-opacity-75 h-screen overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0  ${!loadForm ? 'hidden' : ''}` } >
+        <div id="authentication-modal"   className={`flex  bg-black bg-opacity-75 h-screen overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0 ` } >
             <div className="relative px-4 w-full max-w-md h-full md:h-auto">
                 <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <div className="flex justify-end p-2">
-                        <button onClick={() => setLoadForm(false)} type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-toggle="authentication-modal">
+                        <button onClick={() => navigate(-1) }type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-toggle="authentication-modal">
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>  
                         </button>
                     </div>
                     <form onSubmit={(e) => onSubmitTicket(e)} className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8" action="#">
-                        <h3 className="text-xl font-medium text-gray-900 dark:text-white">Add Ticket </h3>
+                        {/* <h3 className="text-xl font-medium text-gray-900 dark:text-white">Add Ticket </h3> */}
                         <div>
                             <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Title</label>
-                            <input onChange={(e) => setTicketTitle(e.target.value) } value={ticketTitle} type="text" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a title for this board" required />
+                            <input onChange={(e) => setTicketTitle(e.target.value) } readOnly value={ticketTitle} type="text" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter a title for this board" required />
                         </div>
 
                         <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
-                        <textarea onChange={(e) => setTicketDescription(e.target.value)} id="message" style={{marginTop: '.7rem'}} rows="4" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"  placeholder="Leave a comment..." required></textarea>
+                        <textarea onChange={(e) => setTicketDescription(e.target.value)} value={ticketDescription} readOnly id="message" style={{marginTop: '.7rem'}} rows="4" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"  placeholder="Leave a comment..." required></textarea>
 
 
                         <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select label</label>
-                        <select id="countries" onChange={(e) => setTicketLabel(e.target.value)} style={{marginTop: '.7rem'}} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" >
-                            <option value='Content' >Content</option>
+                        <select readOnly id="countries" onChange={(e) => setTicketLabel(e.target.value)} value={ticketLabel} style={{marginTop: '.7rem'}} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" >
+                            <option  value='Content' >Content</option>
                             <option value='Design'>Design</option>
                             <option value='Dev'>Dev</option>
                             <option value='Planning'>Planning</option>
                             <option value='Research' >Research</option>
                         </select>
                       
-                        <button type="submit" className="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">{!isCreating ? 'Create board' : 'Loading...'}</button>
+                        <button type="submit" className="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 flex items-center justify-center">{!isCreating ? <span className='text-lg'> <ShareIcon  className='w-5 h-5 inline-block'/> Share </span> : 'Loading...'}</button>
                     </form>
                 </div>
             </div>
@@ -213,79 +222,10 @@ function BoardDetail() {
               ))
 
           }
-       
-
-           {/* End all */}
-
-           {/* <div className='overflow-y-hidden  flex-shrink-0'>
-           <div className='flex justify-between items-center mb-3'>
-                    <div className='flex items-center space-x-3'>
-                    <h4 className=' text-gray-600 text-sm  font-bold'>TODO</h4>
-                    <span className='text-gray-400 text-sm'> 5</span>
-                    </div>
-
-                    <button className='border rounded-full flex bg-gray-200  p-1 items-center justify-center'>
-                            <PlusSmIcon className='w-4 h-4' />
-                    </button>
-                </div>
-            <section className='max-h-128 w-64 overflow-y-auto flex-column'>
-               <Ticket />
-               <Ticket />
-           </section>
-           </div>
-           <div className='overflow-y-hidden  flex-shrink-0'>
-            <div className='flex justify-between items-center mb-3'>
-                    <div className='flex items-center space-x-3'>
-                    <h4 className=' text-gray-600 text-sm  font-bold'>IN PROGRESS</h4>
-                    <span className='text-gray-400 text-sm'> 5</span>
-                    </div>
-
-                    <button className='border rounded-full flex bg-gray-200  p-1 items-center justify-center'>
-                            <PlusSmIcon className='w-4 h-4' />
-                    </button>
-                </div>
-            <section className='max-h-128 w-64 overflow-y-auto flex-column'>
-               <Ticket />
-           </section>
-           </div>
-           <div className='overflow-y-hidden  flex-shrink-0'>
-            <div className='flex justify-between items-center mb-3'>
-                        <div className='flex items-center space-x-3'>
-                        <h4 className=' text-gray-600 text-sm  font-bold'>DONE</h4>
-                        <span className='text-gray-400 text-sm'> 5</span>
-                        </div>
-
-                        <button className='border rounded-full flex bg-gray-200  p-1 items-center justify-center'>
-                                <PlusSmIcon className='w-4 h-4' />
-                        </button>
-                </div>
-            <section className='max-h-128 w-64 overflow-y-auto flex-column'>
-            <Ticket />
-            <Ticket />
-            <Ticket />
-            </section>
-           </div>
-           <div className='overflow-y-hidden  flex-shrink-0'>
-            <div className='flex justify-between items-center mb-3'>
-                        <div className='flex items-center space-x-3'>
-                        <h4 className=' text-gray-600 text-sm  font-bold'>DONE</h4>
-                        <span className='text-gray-400 text-sm'> 5</span>
-                        </div>
-
-                        <button className='border rounded-full flex bg-gray-200  p-1 items-center justify-center'>
-                                <PlusSmIcon className='w-4 h-4' />
-                        </button>
-                </div>
-            <section className='max-h-128 w-64 overflow-y-auto flex-column'>
-                <Ticket />
-                <Ticket />
-                <Ticket />
-            </section>
-          </div> */}
       </section>
       </DragDropContext>
       </Layout>
   )
 }
 
-export default BoardDetail;
+export default TicketDetail;
