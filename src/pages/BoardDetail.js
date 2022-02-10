@@ -28,7 +28,7 @@ function BoardDetail() {
         })
         res = await res.json()
         
-        console.log(res)
+        // console.log(res)
         dispatch({ type: GET_SINGLE_BOARD, board: res })
         
     } catch (error) {
@@ -71,7 +71,7 @@ function BoardDetail() {
     })
    res = await res.json()
    
-   console.log(res)
+//    console.log(res)
    let board = state.board
    board.tickets = [...board.tickets, res]
 
@@ -105,11 +105,11 @@ function BoardDetail() {
     tickets.splice(draggableTicketIdx, 1)
 
     // update postion
-    console.log('my destination location', item)
+    // console.log('my destination location', item)
     tickets.splice(+item.destination.index,0, draggableTicket)
 
 
-    console.log( 'After drag',tickets)
+    // console.log( 'After drag',tickets)
     // update on the backend
     let response = await fetch(`${BASE_URL}/tickets/${draggableTicket.id}`,{
         method: 'PATCH',

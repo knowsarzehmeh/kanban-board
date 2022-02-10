@@ -29,7 +29,7 @@ function TicketDetail() {
         })
         res = await res.json()
         
-        console.log(res)
+        // console.log(res)
         let ticketDetail;
         if(res){
           ticketDetail  = res.tickets.find((ticket) => ticket.id === +params.ticketId)
@@ -47,7 +47,7 @@ function TicketDetail() {
   }
 
   useEffect(() => {
-      console.log(params);
+    //   console.log(params);
         fetchBoardFromServer(params.id)
   }, []);
 
@@ -82,7 +82,7 @@ function TicketDetail() {
     })
    res = await res.json()
    
-   console.log(res)
+//    console.log(res)
    let board = state.board
    board.tickets = [...board.tickets, res]
 

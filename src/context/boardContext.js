@@ -18,7 +18,7 @@ const boardReducer = (state, action) => {
         return {
             ...state,
             boards: [
-                ...state,
+               ...state.boards,
                 action.board
             ]
         }
