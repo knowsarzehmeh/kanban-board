@@ -45,5 +45,5 @@ To start the backend server run `npm run start:server` on the terminal and all s
 
 
 ## UI INSPIRATION
-The UI design was gotten from dribble from this url [https://dribbble.com/shots/16466111-Kanban-View-Concept](Kanban View Concept Dribble Design) by `Afrian Hanafi`, although not all functionalities on the design was implemented, the scope was to focus on the assignment
+The UI design was gotten from dribble from this url [Kanban View Concept Dribble Design](https://dribbble.com/shots/16466111-Kanban-View-Concept) by `Afrian Hanafi`, although not all functionalities on the design was implemented, the scope was to focus on the assignment
 
