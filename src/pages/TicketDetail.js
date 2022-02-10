@@ -12,11 +12,11 @@ function TicketDetail() {
   const params = useParams()
   const navigate =  useNavigate()
   const {state, dispatch}  =   useBoardContext()
-  const [loadForm, setLoadForm] = useState(false)
+  const [ setLoadForm] = useState(false)
   const [ticketTitle, setTicketTitle] = useState('')
   const [ticketDescription, setTicketDescription] = useState('')
   const [ticketLabel, setTicketLabel] = useState('Content')
-  const [selectedList, setSelectedList] = useState({})
+  const [ setSelectedList] = useState({})
   const [showLinkUrl, setShowLinkUrl] = useState(false)
   const [ticketUrl, setTicketUrl] = useState('')
 
@@ -61,43 +61,43 @@ function TicketDetail() {
   }
 
 
-  const onSubmitTicket = async (e) => {
-      e.preventDefault()
-      setShowLinkUrl(true)
+//   const onSubmitTicket = async (e) => {
+//       e.preventDefault()
+//       setShowLinkUrl(true)
 
-      const data = {
-          title: ticketTitle,
-          desc: ticketDescription,
-          label: ticketLabel,
-          boardId: +params.id,
-          listId: selectedList.id
-      }
+//       const data = {
+//           title: ticketTitle,
+//           desc: ticketDescription,
+//           label: ticketLabel,
+//           boardId: +params.id,
+//           listId: selectedList.id
+//       }
 
 
-      try {
-   let res = await fetch(`${BASE_URL}/tickets`, {
-        method: 'POST',
-        headers: {"Content-Type": "application/json"},
-        body:JSON.stringify(data)
-    })
-   res = await res.json()
+//       try {
+//    let res = await fetch(`${BASE_URL}/tickets`, {
+//         method: 'POST',
+//         headers: {"Content-Type": "application/json"},
+//         body:JSON.stringify(data)
+//     })
+//    res = await res.json()
    
-//    console.log(res)
-   let board = state.board
-   board.tickets = [...board.tickets, res]
+// //    console.log(res)
+//    let board = state.board
+//    board.tickets = [...board.tickets, res]
 
-   dispatch({ type: GET_SINGLE_BOARD, board })
+//    dispatch({ type: GET_SINGLE_BOARD, board })
 
-        setTimeout(() => {
-            setShowLinkUrl(false)
-        }, 500); 
+//         setTimeout(() => {
+//             setShowLinkUrl(false)
+//         }, 500); 
 
-      } catch(e) {
-        console.error(e)
-        setShowLinkUrl(false)
-      }
+//       } catch(e) {
+//         console.error(e)
+//         setShowLinkUrl(false)
+//       }
      
-  }
+//   }
 
 
   const getTicketLink = () => {
