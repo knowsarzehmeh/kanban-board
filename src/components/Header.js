@@ -180,7 +180,7 @@ return (
                      </button> 
                   </li>
                   <li className='flex-1'>
-                      <button onClick={() => setLoadForm(true)} className='bg-red-600 text-white text-sm px-3 p-2 rounded-md flex items-center'>
+                      <button onClick={() => setLoadForm(true)} className='bg-red-600 hover:bg-red-500 text-white text-sm px-3 p-2 rounded-md flex items-center'>
                          <PlusSmIcon className='w-4 h-4'/> 
                          <span> New Board</span>
                       </button>

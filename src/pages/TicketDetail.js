@@ -17,7 +17,8 @@ function TicketDetail() {
   const [ticketDescription, setTicketDescription] = useState('')
   const [ticketLabel, setTicketLabel] = useState('Content')
   const [selectedList, setSelectedList] = useState({})
-  const [isCreating, setIsCreating] = useState(false)
+  const [showLinkUrl, setShowLinkUrl] = useState(false)
+  const [ticketUrl, setTicketUrl] = useState('')
 
   const fetchBoardFromServer = async (id) => {
     if(isNaN(id)) navigate('/')
@@ -62,7 +63,7 @@ function TicketDetail() {
 
   const onSubmitTicket = async (e) => {
       e.preventDefault()
-      setIsCreating(true)
+      setShowLinkUrl(true)
 
       const data = {
           title: ticketTitle,
@@ -88,15 +89,25 @@ function TicketDetail() {
    dispatch({ type: GET_SINGLE_BOARD, board })
 
         setTimeout(() => {
-            setIsCreating(false)
+            setShowLinkUrl(false)
         }, 500); 
 
       } catch(e) {
         console.error(e)
-        setIsCreating(false)
+        setShowLinkUrl(false)
       }
      
   }
+
+
+  const getTicketLink = () => {
+      setTicketUrl(window.location.href)
+  }
+
+
+  useEffect(() => {
+      getTicketLink()
+  }, [])
 
 
   const onDragEnd = async (item) => {
@@ -139,13 +150,24 @@ function TicketDetail() {
     return (
         <div id="authentication-modal"   className={`flex  bg-black bg-opacity-75 h-screen overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0 ` } >
             <div className="relative px-4 w-full max-w-md h-full md:h-auto">
-                <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 relative">
+                   { showLinkUrl && <div className='absolute bottom-10 p-3 -right-80 w-80 h-30 rounded shadow bg-white z-20'>
+                          <div className='flex items-center justify-between border-b mb-2 p-1'>
+                            <h3 className='text-center  text-sm font-medium'>Link to this card</h3>
+                            <button onClick={() => setShowLinkUrl(false)} type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-toggle="authentication-modal">
+                                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>  
+                             </button>
+                          </div>
+                        <div className='bg-gray-100 p-2 border mt-1 rounded'>
+                                <p className='text-sm'>{ticketUrl}</p>
+                        </div>
+                    </div>}
                     <div className="flex justify-end p-2">
                         <button onClick={() => navigate(-1) }type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-toggle="authentication-modal">
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>  
                         </button>
                     </div>
-                    <form onSubmit={(e) => onSubmitTicket(e)} className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8" action="#">
+                    <form className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8" action="#">
                         {/* <h3 className="text-xl font-medium text-gray-900 dark:text-white">Add Ticket </h3> */}
                         <div>
                             <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Title</label>
@@ -165,7 +187,7 @@ function TicketDetail() {
                             <option value='Research' >Research</option>
                         </select>
                       
-                        <button type="submit" className="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 flex items-center justify-center">{!isCreating ? <span className='text-lg'> <ShareIcon  className='w-5 h-5 inline-block'/> Share </span> : 'Loading...'}</button>
+                        <button onClick={() => setShowLinkUrl(true)} type="button" className="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 flex items-center justify-center"> <span className='text-lg'> <ShareIcon  className='w-5 h-5 inline-block'/> Share </span> </button>
                     </form>
                 </div>
             </div>
