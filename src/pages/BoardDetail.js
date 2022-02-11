@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
@@ -96,7 +97,7 @@ function BoardDetail() {
       let source = tickets.filter(ticket => ticket.listId === +item.source.droppableId )
       let draggableTicket = source.find(ticket =>  ticket.id === +item.draggableId)
       let draggableTicketIdx = tickets.findIndex(ticket =>  ticket.id === +item.draggableId)
-      let destination = tickets.filter(ticket => ticket.listId === +item.destination.droppableId )
+    //   let destination = tickets.filter(ticket => ticket.listId === +item.destination.droppableId )
 
     //   update the list id of the draggableTicket
      draggableTicket = {...draggableTicket, listId: +item.destination.droppableId}
